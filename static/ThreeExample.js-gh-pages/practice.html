@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script type="text/javascript" src="./lib/three.js"></script>
+        
+        <script type="text/javascript">
+            let mesh=null;
+            function init() {
+                var renderer = new THREE.WebGLRenderer({
+                    canvas: document.getElementById('mainCanvas')
+                });
+                renderer.setClearColor(0x000000);
+                var scene = new THREE.Scene();
+                
+                // camera
+                var camera = new THREE.OrthographicCamera(-1000, 1000, 750, -750, 1, 2000);
+                camera.position.set(0, 1200, 1200);
+                camera.lookAt(new THREE.Vector3(0, 400, 0)); 
+                scene.add(camera);  
+                
+                // light 
+                var light = new THREE.PointLight(0xffffff, 1, 1000);
+                light.position.set(500, 750, 600);
+                scene.add(light);
+                
+                var materials = [];
+                for (var i = 0; i < 6; ++i) {
+                    let picurl='./img/' + i + '.png';
+                    if(i==5){
+                        picurl='./img/' + 5 + '.jpg';
+                    }
+                    materials.push(new THREE.MeshBasicMaterial({
+                        map: THREE.ImageUtils.loadTexture(picurl, {}, function() {
+                            renderer.render(scene, camera);
+                        }),
+                        
+                    }));
+                }
+                
+                var cube = new THREE.Mesh(new THREE.CubeGeometry(380, 380, 380),
+                        new THREE.MeshFaceMaterial(materials));
+                cube.position.set(0, 0, 0);
+                mesh=cube;
+                scene.add(cube);   
+                
+                id = setInterval(draw, 20);
+
+
+                function draw() {
+                    renderer.render(scene, camera); 
+                    mesh.rotation.x += 0.01;
+                    mesh.rotation.y += 0.01;
+                    if (mesh.rotation.y > Math.PI * 2) {
+                        mesh.rotation.y -= Math.PI * 2;
+                    }
+                    if (mesh.rotation.x > Math.PI * 2) {
+                        mesh.rotation.x -= Math.PI * 2;
+                    }
+
+                    if(window.drop&&window.dropHeight){
+
+                        if(window.dropF=='top'&&mesh.position.y<=window.dropHeight){
+                            mesh.position.y+=window.seed;
+                        }else if(window.dropF=='top'&&mesh.position.y>window.dropHeight){
+                            window.dropF="bottom";
+                            window.dropHeight=window.dropHeight*0.9;
+                            window.seed=window.seed*0.9
+                        }else if(window.dropF=='bottom'&&mesh.position.y>0){
+                            mesh.position.y-=window.seed;
+                        }else if(window.dropF=='bottom'&&mesh.position.y<=0){
+                            window.dropF="top";
+                            window.dropHeight=window.dropHeight*0.9;
+                            window.seed=window.seed*0.9
+                        }
+
+                        if(dropHeight<50){
+                            dropHeight=null;
+                            mesh.position.y=0;
+                        }
+                    }
+                }
+            } 
+
+            
+        </script>  
+    </head>
+    
+    <body onload="init()">
+        <canvas id="mainCanvas" width="800px" height="600px" ></canvas>
+        <br>
+        <button class="btn1">魔方跳动</button>
+        
+    </body>
+    <script type="text/javascript"> 
+        $('.btn1').on('click',function(){
+            window.drop=true;
+            window.dropHeight=650; 
+            window.dropF='top';
+            window.seed=8;
+        })
+
+
+
+        
+        let webSocket = new WebSocket("ws://127.0.0.1:7199/"); 
+        webSocket.onopen = function() {
+            console.log("websoket 成功打开")
+            // this.webSocket.send("");
+        };
+        webSocket.onmessage = function(res) {
+            let data=res.data  
+            console.log(data)   
+            if(data=="reload"){ 
+                location.assign(location) 
+            }
+        };
+        webSocket.onerror = function(data) {
+            console.log(data);
+        };
+        setTimeout(function(){
+          webSocket.send('hellow word')
+        },2000)
+    </script>
+</html>

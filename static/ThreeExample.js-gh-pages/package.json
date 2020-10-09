@@ -1,0 +1,33 @@
+{
+  "name": "node-serve",
+  "version": "1.0.0",
+  "description": "解决问题",
+  "main": "app.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "_async-limiter@1.0.0@async-limiter": "^1.0.0",
+    "_crypt@0.0.2@crypt": "^0.0.2",
+    "_charenc@0.0.2@charenc": "^0.0.2",
+    "_is-wsl@1.1.0@is-wsl": "^1.1.0",
+    "_is-buffer@1.1.6@is-buffer": "^1.1.6",
+    "_md5@2.2.1@md5": "^2.2.1",
+    "_ws@7.0.0@ws": "^7.0.0",
+    "_open@6.3.0@open": "^6.3.0",
+    "async-limiter": "^1.0.0",
+    "charenc": "^0.0.2",
+    "crypt": "^0.0.2",
+    "is-buffer": "^1.1.6",
+    "md5": "^2.2.1",
+    "is-wsl": "^1.1.0",
+    "open": "^6.3.0",
+    "ws": "^7.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "run"
+  },
+  "author": "lzd",
+  "license": "ISC"
+}
